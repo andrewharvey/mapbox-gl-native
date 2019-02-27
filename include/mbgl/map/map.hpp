@@ -64,7 +64,7 @@ public:
     bool isPanning() const;
 
     // Camera
-    CameraOptions getCameraOptions(const EdgeInsets&) const;
+    CameraOptions getCameraOptions(const EdgeInsets& = {}) const;
     void jumpTo(const CameraOptions&);
     void easeTo(const CameraOptions&, const AnimationOptions&);
     void flyTo(const CameraOptions&, const AnimationOptions&);
@@ -81,13 +81,7 @@ public:
     void resetPosition(const EdgeInsets& = {});
 
     // Zoom
-    void scaleBy(double scale, optional<ScreenCoordinate> anchor, const AnimationOptions& animation);
-    void setZoom(double zoom, const AnimationOptions& = {});
-    void setZoom(double zoom, optional<ScreenCoordinate>, const AnimationOptions& = {});
-    void setZoom(double zoom, const EdgeInsets&, const AnimationOptions& = {});
-    double getZoom() const;
-    void setLatLngZoom(const LatLng&, double zoom, const AnimationOptions& = {});
-    void setLatLngZoom(const LatLng&, double zoom, const EdgeInsets&, const AnimationOptions& = {});
+    void scaleBy(double scale, optional<ScreenCoordinate> anchor, const AnimationOptions& animation = {});
     void resetZoom();
 
     // Pitch
@@ -159,9 +153,9 @@ public:
     // Tile prefetching
     //
     // When loading a map, if `PrefetchZoomDelta` is set to any number greater than 0, the map will
-    // first request a tile for `zoom = getZoom() - delta` in a attempt to display a full map at
-    // lower resolution as quick as possible. It will get clamped at the tile source minimum zoom.
-    // The default `delta` is 4.
+    // first request a tile for `zoom - delta` in a attempt to display a full map at lower
+    // resolution as quick as possible. It will get clamped at the tile source minimum zoom. The
+    // default `delta` is 4.
     void setPrefetchZoomDelta(uint8_t delta);
     uint8_t getPrefetchZoomDelta() const;
 

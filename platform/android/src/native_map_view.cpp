@@ -403,11 +403,12 @@ void NativeMapView::setPitch(jni::JNIEnv&, jni::jdouble pitch, jni::jlong durati
 }
 
 void NativeMapView::setZoom(jni::JNIEnv&, jni::jdouble zoom, jni::jdouble x, jni::jdouble y, jni::jlong duration) {
-    map->setZoom(zoom, mbgl::ScreenCoordinate{x,y}, mbgl::AnimationOptions{mbgl::Milliseconds(duration)});
+    map->easeTo(mbgl::CameraOptions().withZoom(zoom).withAnchor(mbgl::ScreenCoordinate{ x, y }),
+                mbgl::AnimationOptions{ mbgl::Milliseconds(duration) });
 }
 
 jni::jdouble NativeMapView::getZoom(jni::JNIEnv&) {
-    return map->getZoom();
+    return *map->getCameraOptions({}).zoom;
 }
 
 void NativeMapView::resetZoom(jni::JNIEnv&) {
