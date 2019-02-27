@@ -1360,7 +1360,7 @@ public:
     CLLocationCoordinate2D centerCoordinate = MGLLocationCoordinate2DFromLatLng(cameraOptions.center ? *cameraOptions.center : _mbglMap->getLatLng());
     double zoomLevel = cameraOptions.zoom ? *cameraOptions.zoom : self.zoomLevel;
     CLLocationDirection direction = cameraOptions.angle ? mbgl::util::wrap(*cameraOptions.angle, 0., 360.) : self.direction;
-    CGFloat pitch = cameraOptions.pitch ? *cameraOptions.pitch : _mbglMap->getPitch();
+    CGFloat pitch = cameraOptions.pitch ? *cameraOptions.pitch : *_mbglMap->getCameraOptions({}).pitch;
     CLLocationDistance altitude = MGLAltitudeForZoomLevel(zoomLevel, pitch,
                                                           centerCoordinate.latitude,
                                                           self.frame.size);
@@ -1477,7 +1477,7 @@ public:
 
         if (gestureRecognizer.state == NSGestureRecognizerStateBegan) {
             _directionAtBeginningOfGesture = self.direction;
-            _pitchAtBeginningOfGesture = _mbglMap->getPitch();
+            _pitchAtBeginningOfGesture = *_mbglMap->getCameraOptions({}).pitch;
         } else if (gestureRecognizer.state == NSGestureRecognizerStateChanged) {
             MGLMapCamera *oldCamera = self.camera;
             BOOL didChangeCamera = NO;
@@ -1490,7 +1490,7 @@ public:
                 [self didChangeValueForKey:@"direction"];
             }
             if (self.pitchEnabled) {
-                _mbglMap->setPitch(_pitchAtBeginningOfGesture + delta.y / 5, center);
+                _mbglMap->jumpTo(mbgl::CameraOptions().withPitch(_pitchAtBeginningOfGesture + delta.y / 5).withAnchor(center));
                 didChangeCamera = YES;
             }
             
